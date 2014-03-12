@@ -24,10 +24,10 @@ body {
     -ms-border-radius: 0px 0px 3px 3px;
     -o-border-radius: 0px 0px 3px 3px;
     border-radius: 0px 0px 3px 3px; }
-  .navbar ul.nav li.divider {
+/*  .navbar ul.nav li.divider {
     border-left: 2px solid #999;
     height: 40px; }
-#spinner {
+*/#spinner {
   height: 300px; }
 
 .post {

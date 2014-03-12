@@ -6,7 +6,11 @@
       "accounts-ui-bootstrap-dropdown": {},
       "spin": {},
       "iron-router-progress": {},
-      "jquerytagsinputjs": {}
+      "jquerytagsinputjs": {},
+      "x-editable-bootstrap": {},
+      "select2": {},
+      "houston": {},
+      "collection-hooks": {}
     },
     "packages": {
       "iron-router": {
@@ -33,6 +37,31 @@
         "git": "https://github.com/nifticubes/meteor-tagsinput.git",
         "tag": "v0.0.1",
         "commit": "22cc85a6e99999caf37aac53889fc6137bb9e5f7"
+      },
+      "x-editable-bootstrap": {
+        "git": "https://github.com/nate-strauser/meteor-x-editable-bootstrap.git",
+        "tag": "v1.4.6.2",
+        "commit": "d3fcead1dd2302e30522e8c09d020f9a3d312cd0"
+      },
+      "select2": {
+        "git": "https://github.com/nate-strauser/meteor-select2.git",
+        "tag": "v3.4.5",
+        "commit": "4a8d05582b949a14f0ee217c185166abbf112822"
+      },
+      "houston": {
+        "git": "https://github.com/gterrono/houston.git",
+        "tag": "v1.0.1",
+        "commit": "59653d3a345a438c83bfd5244b992a19c4b014d7"
+      },
+      "collection-hooks": {
+        "git": "https://github.com/matb33/meteor-collection-hooks.git",
+        "tag": "v0.6.3",
+        "commit": "70f2598bf991cb36effd72aea2555cba96f88355"
+      },
+      "paginated-subscription": {
+        "git": "https://github.com/tmeasday/meteor-paginated-subscription.git",
+        "tag": "v0.1.2",
+        "commit": "35e0c6112df2b4cfeb60b559276a93cac5ee2dd6"
       }
     }
   }

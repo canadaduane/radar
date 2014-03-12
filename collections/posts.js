@@ -7,10 +7,26 @@ Posts.allow({
 
 Posts.deny({
   update: function(userId, post, fieldNames) {
-    // may only edit the following two fields:
-    return (_.without(fieldNames, 'url', 'title').length > 0);
+    // may only edit the following fields:
+    return (_.without(fieldNames, 'title', 'message', 'audience').length > 0);
   }
 });
+
+var upsertTagsForPost = function(userId, doc) {
+  if (_.isArray(doc.audience))
+    tags = doc.audience;
+  else
+    tags = [doc.audience];
+
+  _.each(tags, function(tag) {
+    var tagDoc = {name: tag, category: 'audience'};
+    var id = Tags.upsert(tagDoc, tagDoc);
+    // Meteor._debug('upserted tag', id, tagDoc);
+  });
+};
+
+Posts.before.insert(upsertTagsForPost);
+Posts.before.update(upsertTagsForPost);
 
 Meteor.methods({
   post: function(postAttributes) {
@@ -19,21 +35,21 @@ Meteor.methods({
     
     // ensure the user is logged in
     if (!user)
-      throw new Meteor.Error(401, "You need to login to post new stories");
+      throw new Meteor.Error(401, "You need to login to create new business cases");
     
     // ensure the post has a title
     if (!postAttributes.title)
-      throw new Meteor.Error(422, 'Please fill in a headline');
+      throw new Meteor.Error(422, "Please fill in a title");
     
     // check that there are no previous posts with the same link
-    if (postAttributes.url && postWithSameLink) {
-      throw new Meteor.Error(302, 
-        'This link has already been posted', 
-        postWithSameLink._id);
-    }
+    // if (postAttributes.url && postWithSameLink) {
+    //   throw new Meteor.Error(302, 
+    //     'This link has already been posted', 
+    //     postWithSameLink._id);
+    // }
     
     // pick out the whitelisted keys
-    var post = _.extend(_.pick(postAttributes, 'url', 'title', 'message'), {
+    var post = _.extend(_.pick(postAttributes, 'title', 'message', 'audience'), {
       userId: user._id, 
       author: user.username, 
       submitted: new Date().getTime(),
