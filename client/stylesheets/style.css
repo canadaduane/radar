@@ -15,6 +15,16 @@ body {
   background: #eee;
   color: #666666; }
 
+.tags > .tag {
+  border: 1px solid #e0e0e0;
+  color: #7b7b7b;
+  background-color: #efefef;
+  padding: 0px 8px;
+  border-radius: 11px; }
+
+.editable-click {
+  border: none; }
+
 .navbar {
   margin-bottom: 10px; }
   /* line 32, ../sass/style.scss */
@@ -64,8 +74,7 @@ body {
       .post .post-content h3 span {
         font-weight: normal;
         font-size: 14px;
-        display: inline-block;
-        color: #aaaaaa; }
+        display: inline-block; }
     .post .post-content p {
       margin: 0; }
   .post .discuss {

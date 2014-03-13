@@ -1,6 +1,5 @@
 Template.postSubmit.rendered = function(template) {
   var tags = Tags.find({}).fetch();
-  console.log('tags', tags);
   var tagNames = _.map(tags, function(tag) { return tag.name; });
   $(this.find('input.editable')).select2({tags: tagNames});
 };

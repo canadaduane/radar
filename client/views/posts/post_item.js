@@ -17,13 +17,72 @@ Template.postItem.helpers({
   }
 });
 
+var renderTags = function(post) {
+  var $this = $(post.firstNode);
+  console.log('post', post);
+  
+  $.fn.editable.defaults.mode = 'popover';
+
+  // var postTags = 
+  var tagsByName = {};
+
+  // _.each(tags, function(tag) {
+  //   tagsByName[tag.name] = tag;
+  // });
+  // var tagNames = _.map(tags, function(tag) { return tag.name || ""; });
+
+  var allTags = function() {
+    var tags = Tags.find({}).fetch();
+    return _.map(tags, function(tag) {
+      return {id: tag.name, text: tag.name || ""};
+    });
+  };
+
+  var tagFormatResult = function(object, container, query) {
+    $(container).append("<span class='btn'>" + object.text + "</span>");
+  };
+
+  var tagDisplay = function(selectedTags) {
+    var html = [];
+    if(selectedTags && selectedTags.length) {
+      $.each(selectedTags, function(i, v) {
+        var text = $.fn.editableutils.escape(v);
+        var weight = tagsByName[v] ? (tagsByName[v].weight || 0) : 0;
+        var cls = "tag-weight-" + weight;
+        html.push("<span class='tag " + cls + "'>" + text + "</span>");
+      });
+      $(this).html(html.join(' '));
+    } else {
+      $(this).empty(); 
+    }
+  };
+
+  $('.tags', $this).on('change', function(a) {
+    console.log('change', a);
+  }).editable({
+    emptytext: 'Add Target Audience',
+    placement: 'right',
+    type: 'select2',
+    display: tagDisplay,
+    select2: {
+      openOnEnter: false,
+      tags: allTags,
+      tokenSeparators: [",", " "]
+    }
+  });
+};
+
 Template.postItem.rendered = function(){
+  // Render tag pills
+  renderTags(this);
+
   // animate post from previous position to new position
   var instance = this;
   var rank = instance.data._rank;
   var $this = $(this.firstNode);
   var postHeight = 80;
   var newPosition = rank * postHeight;
+
   
   // if element has a currentPosition (i.e. it's not the first ever render)
   if (typeof(instance.currentPosition) !== 'undefined') {
