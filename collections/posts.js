@@ -75,5 +75,21 @@ Meteor.methods({
       $addToSet: {upvoters: user._id},
       $inc: {votes: 1}
     });
+  },
+
+  unupvote: function(postId) {
+    var user = Meteor.user();
+    // ensure the user is logged in
+    if (!user)
+      throw new Meteor.Error(401, "You need to login to vote");
+    
+    Posts.update({
+      _id: postId, 
+      upvoters: user._id
+    }, {
+      $pull: {upvoters: user._id},
+      $inc: {votes: -1}
+    });
   }
+
 });
