@@ -1,17 +1,25 @@
 <template name="postItem">
   <div class="post">
-    <a href="#" class="upvote btn {{upvotedClass}}">⬆</a>
+    <div class="vote-pane">
+      <a href="#" class="upvote btn {{upvotedClass}}">⬆</a>
+      <div class="vote-tally">{{pluralize votes "Vote"}}</div>
+    </div>
     <div class="post-content">
-      <h3>{{title}}
+      <h3>{{title}}</h3>
+      <p class="tags">
         <span class="tags"></span>
-      </h3>
-      <p>
-        {{pluralize votes "Vote"}},
+      </p>
+      <p class="description">
+        {{description}}
+      </p>
+      <p class="details-panel">
         submitted by {{author}},
         <a href="{{pathFor 'postPage'}}">{{pluralize commentsCount "comment"}}</a>
-        {{#if ownPost}}<a href="{{pathFor 'postEdit'}}">Edit</a>{{/if}}
       </p>
     </div>
-    <a href="{{pathFor 'postPage'}}" class="discuss btn">Discuss</a>
+    <div class="button-pane">
+      <a href="{{pathFor 'postPage'}}" class="discuss btn">Discuss</a>
+      {{#if ownPost}}<a href="{{pathFor 'postEdit'}}" class="edit btn">Edit</a>{{/if}}
+    </div>
   </div>
 </template>

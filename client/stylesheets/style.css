@@ -15,22 +15,37 @@ body {
   background: #eee;
   color: #666666; }
 
-.tags > .tag {
-  border: 1px solid #e0e0e0;
-  color: #7b7b7b;
-  background-color: #efefef;
-  padding: 0px 8px;
-  border-radius: 11px;
+.tags {
   font-weight: normal;
-  font-size: 14px;
-  display: inline-block;
-}
-.tag .decal {
-  background-color: #fff;
-  padding: 0px 5px;
-  margin-left: 5px;
-  border-radius: 4px;
-  font-size: 10px; }
+  font-size: 14px; }
+  .tags > .tag {
+    border: 1px solid #e0e0e0;
+    color: #444;
+    background-color: #efaf7f;
+    padding: 0px 8px;
+    border-radius: 11px;
+    font-size: 14px;
+    display: inline-block;
+    margin-top: 3px;
+  }
+  .tags > .tag.tag-weight-1 {
+    background-color: #efefef;
+    color: #7b7b7b; }
+  .tags > .tag.tag-weight-2 {
+    background-color: #efefcf;
+    color: #7b7b7b; }
+  .tags > .tag.tag-weight-3 {
+    background-color: #efdfaf;
+    color: #666; }
+  .tags > .tag.tag-weight-4 {
+    background-color: #efaf7f;
+    color: #444; }
+  .tag .decal {
+    background-color: #fff;
+    padding: 0px 5px;
+    margin-left: 5px;
+    border-radius: 4px;
+    font-size: 10px; }
 
 .editable-click {
   border: none; }
@@ -68,26 +83,36 @@ body {
     clear: both; }
   .post.invisible {
     opacity: 0; }
-  .post .upvote {
-    display: block;
-    margin: 7px 12px 0 0;
-    float: left; }
+  .post .vote-pane {
+    display: table-cell;
+    margin: 0px 12px 0 0;
+    /*float: left;*/ }
+    .post .vote-pane .upvote {
+      display: block; }
+    .post .vote-pane .vote-tally {
+      margin-top: 0.4em;
+      text-align: center; }
   .post .post-content {
-    float: left; }
+    display: table-cell;
+    width: 100%;
+    padding-left: 1em; }
+    .post .post-content .description {
+      margin-top: 0.5em; }
     .post .post-content h3 {
       margin: 0;
-      line-height: 1.4;
+      line-height: 32px;
       font-size: 18px; }
       .post .post-content h3 a {
         display: inline-block;
         margin-right: 5px; }
     .post .post-content p {
       margin: 0; }
-  .post .discuss {
-    display: block;
-    float: right;
-    margin-top: 7px; }
-
+  .post .button-pane {
+    display: table-cell;
+    /*float: right;*/
+    height: 100%; }
+    .post .button-pane .btn {
+      margin-bottom: 5px; }
 .comments {
   list-style-type: none;
   margin: 0; }
