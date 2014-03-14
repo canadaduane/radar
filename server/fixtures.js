@@ -2,9 +2,9 @@
 if (Posts.find().count() === 0) {
   var now = new Date().getTime();
   
-  var lemonadeId = Posts.insert({
+  // var lemonadeId = Posts.insert({
     
-  });
+  // });
   
   // var telescopeId = Posts.insert({
   //   title: 'Introducing Telescope',

@@ -19,17 +19,29 @@ Template.postItem.helpers({
 
 var renderTags = function(post) {
   var $this = $(post.firstNode);
-  console.log('post', post);
+  // console.log('post', post);
   
-  $.fn.editable.defaults.mode = 'popover';
+  // $.fn.editable.defaults.mode = 'popover';
 
-  // var postTags = 
-  var tagsByName = {};
+  var i, j;
+  var tagsByName = postTagsByName(post.data);
+  var postTags = _.keys(tagsByName);
+  // var tagsByName = {};
 
-  // _.each(tags, function(tag) {
-  //   tagsByName[tag.name] = tag;
-  // });
-  // var tagNames = _.map(tags, function(tag) { return tag.name || ""; });
+  // if (post.data.perspectives) {
+  //   for (i = 0; i < post.data.perspectives.length; i++) {
+  //     var perspective = post.data.perspectives[i];
+  //     for (j = 0; j < perspective.audienceTags.length; j++) {
+  //       var tag = perspective.audienceTags[j];
+  //       if (tagsByName[tag]) {
+  //         tagsByName[tag].weight++;
+  //       } else {
+  //         tagsByName[tag] = {name: tag, weight: 1};
+  //       }
+  //     }
+  //   }
+  // }
+
 
   var allTags = function() {
     var tags = Tags.find({}).fetch();
@@ -47,9 +59,9 @@ var renderTags = function(post) {
     if(selectedTags && selectedTags.length) {
       $.each(selectedTags, function(i, v) {
         var text = $.fn.editableutils.escape(v);
-        var weight = tagsByName[v] ? (tagsByName[v].weight || 0) : 0;
+        var weight = tagsByName[v] ? (tagsByName[v].weight || 1) : 1;
         var cls = "tag-weight-" + weight;
-        html.push("<span class='tag " + cls + "'>" + text + "</span>");
+        html.push("<span class='tag " + cls + "'>" + text + "<span class='decal'>" + weight + "</span></span>");
       });
       $(this).html(html.join(' '));
     } else {
@@ -57,13 +69,19 @@ var renderTags = function(post) {
     }
   };
 
-  $('.tags', $this).on('change', function(a) {
-    console.log('change', a);
+  $('.tags', $this).unbind('save').on('save', function(e, params) {
+    return (function(postId, tags) {
+      // console.log('setAudienceTags', postId, tags);
+      Meteor.call('setAudienceTags', postId, tags);
+    })(post.data._id, params.submitValue);
   }).editable({
+    mode: 'popup',
+    autotext: 'always',
     emptytext: 'Add Target Audience',
     placement: 'right',
     type: 'select2',
     display: tagDisplay,
+    value: postTags,
     select2: {
       openOnEnter: false,
       tags: allTags,
