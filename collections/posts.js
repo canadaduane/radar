@@ -71,27 +71,32 @@ postAvgMarketSize = function(post) {
 
 postMyMarketSize = function(post, userId) {
   if (post.perspectives) {
-    return _.chain(post.perspectives).
+    var myPerspective = _.chain(post.perspectives).
       filter(fromPerspective(userId)).
       first().
-      value().
-      marketSize;
+      value();
+    if (myPerspective)
+      return myPerspective.marketSize;
+    else
+      return 0;
   } else {
     return 0;
   }
 };
 
 var updatePerspectiveKey = function(postId, key, value) {
-  var doc = { userId: Meteor.userId() };
 
-  doc[key] = value;
+  var setDoc = {};
+  setDoc['perspectives.$.' + key] = value;
 
   var updated = Posts.update(
     { _id: postId, 'perspectives.userId': Meteor.userId() },
-    { $set: { 'perspectives.$': doc } }
+    { $set: setDoc }
   );
 
   if (updated == 0) {
+    var doc = { userId: Meteor.userId() };
+    doc[key] = value;
     Posts.update(
       { _id: postId },
       { $push: { perspectives: doc } }
