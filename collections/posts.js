@@ -60,7 +60,6 @@ postMarketSizeEstimates = function(post) {
 
 postAvgMarketSize = function(post) {
   var estimates = postMarketSizeEstimates(post);
-  Meteor._debug('estimates', estimates);
   if (estimates.length > 0) {
     var sum = _.reduce(estimates, function(memo, num){ return memo + num; }, 0);
     return parseFloat(sum) / estimates.length;
