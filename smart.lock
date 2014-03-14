@@ -6,11 +6,11 @@
       "accounts-ui-bootstrap-dropdown": {},
       "spin": {},
       "iron-router-progress": {},
-      "jquerytagsinputjs": {},
       "x-editable-bootstrap": {},
       "select2": {},
       "houston": {},
-      "collection-hooks": {}
+      "collection-hooks": {},
+      "chartjs": {}
     },
     "packages": {
       "iron-router": {
@@ -33,11 +33,6 @@
         "tag": "v0.2.0",
         "commit": "ce730d1d26feadb7c75ea25f22c5bfdb0c549a8b"
       },
-      "jquerytagsinputjs": {
-        "git": "https://github.com/nifticubes/meteor-tagsinput.git",
-        "tag": "v0.0.1",
-        "commit": "22cc85a6e99999caf37aac53889fc6137bb9e5f7"
-      },
       "x-editable-bootstrap": {
         "git": "https://github.com/nate-strauser/meteor-x-editable-bootstrap.git",
         "tag": "v1.4.6.2",
@@ -57,6 +52,11 @@
         "git": "https://github.com/matb33/meteor-collection-hooks.git",
         "tag": "v0.6.3",
         "commit": "70f2598bf991cb36effd72aea2555cba96f88355"
+      },
+      "chartjs": {
+        "git": "https://github.com/donskifarrell/meteor-chartjs.git",
+        "tag": "v0.0.4",
+        "commit": "9d2adcd1de3728c8227e8eb7da0dcb2e0df21d0b"
       },
       "paginated-subscription": {
         "git": "https://github.com/tmeasday/meteor-paginated-subscription.git",

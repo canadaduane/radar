@@ -4,10 +4,10 @@
     "accounts-ui-bootstrap-dropdown": {},
     "spin": {},
     "iron-router-progress": {},
-    "jquerytagsinputjs": {},
     "x-editable-bootstrap": {},
     "select2": {},
     "houston": {},
-    "collection-hooks": {}
+    "collection-hooks": {},
+    "chartjs": {}
   }
 }

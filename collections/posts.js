@@ -32,6 +32,74 @@ postTagsByName = function(post) {
   return tagsByName;
 };
 
+// Helper function for filtering perspectives with 'marketSize' key
+var hasMarketSize = function(perspective) {
+  return _.isNumber(perspective.marketSize) &&
+        !_.isNaN(perspective.marketSize);
+};
+
+// Helper function to find the current user's perspective
+var fromPerspective = function(userId) {
+  return function(perspective) {
+    return perspective.userId == userId;
+  };
+}
+
+postMarketSizeEstimates = function(post) {
+  if (post.perspectives) {
+    return _.chain(post.perspectives).
+      filter(hasMarketSize).
+      map(function(p) {
+        return parseInt(p.marketSize);
+      }).
+      value();
+  } else {
+    return [];
+  }
+}
+
+postAvgMarketSize = function(post) {
+  var estimates = postMarketSizeEstimates(post);
+  Meteor._debug('estimates', estimates);
+  if (estimates.length > 0) {
+    var sum = _.reduce(estimates, function(memo, num){ return memo + num; }, 0);
+    return parseFloat(sum) / estimates.length;
+  } else {
+    return "";
+  }
+};
+
+postMyMarketSize = function(post, userId) {
+  if (post.perspectives) {
+    return _.chain(post.perspectives).
+      filter(fromPerspective(userId)).
+      first().
+      value().
+      marketSize;
+  } else {
+    return 0;
+  }
+};
+
+var updatePerspectiveKey = function(postId, key, value) {
+  var doc = { userId: Meteor.userId() };
+
+  doc[key] = value;
+
+  var updated = Posts.update(
+    { _id: postId, 'perspectives.userId': Meteor.userId() },
+    { $set: { 'perspectives.$': doc } }
+  );
+
+  if (updated == 0) {
+    Posts.update(
+      { _id: postId },
+      { $push: { perspectives: doc } }
+    );
+  }
+
+};
+
 Meteor.methods({
   post: function(postAttributes) {
     var user = Meteor.user();
@@ -61,28 +129,11 @@ Meteor.methods({
   },
 
   setAudienceTags: function(postId, tags) {
-    // Posts.update(
-    //   { _id: postId, 'perspectives.userId': Meteor.userId() },
-    //   { $addToSet: { perspectives: { userId: Meteor.userId() } } }
-    // );
+    updatePerspectiveKey(postId, 'audienceTags', tags);
+  },
 
-    var updated = Posts.update(
-      { _id: postId, 'perspectives.userId': Meteor.userId() },
-      { $set: { 'perspectives.$': {
-        userId: Meteor.userId(),
-        audienceTags: tags
-      } } }
-    );
-
-    if (updated == 0) {
-      Posts.update(
-        { _id: postId },
-        { $push: { perspectives: {
-          userId: Meteor.userId(),
-          audienceTags: tags
-        } } }
-      );
-    }
+  setMarketSize: function(postId, marketSize) {
+    updatePerspectiveKey(postId, 'marketSize', marketSize);
   },
 
   // Sets the "perspective" sub-document of a post, for the current user

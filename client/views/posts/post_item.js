@@ -49,12 +49,26 @@ var reverseStringCompare = function (str) {
   );
 };
 
+var addCommas = function(nStr) {
+  nStr += '';
+  x = nStr.split('.');
+  x1 = x[0];
+  x2 = x.length > 1 ? '.' + x[1] : '';
+  var rgx = /(\d+)(\d{3})/;
+  while (rgx.test(x1)) {
+    x1 = x1.replace(rgx, '$1' + ',' + '$2');
+  }
+  return x1 + x2;
+};
+
 var renderTags = function(post) {
   var $this = $(post.firstNode);
 
   var i, j;
   var tagsByName = postTagsByName(post.data);
   var postTags = _.keys(tagsByName);
+  var initialMarketSize = postAvgMarketSize(post.data);
+  var myMarketSizeEstimate = postMyMarketSize(post.data, Meteor.userId());
 
   var allTags = function() {
     var tags = Tags.find({}).fetch();
@@ -88,18 +102,17 @@ var renderTags = function(post) {
   };
 
   $('.tags', $this).unbind('save').on('save', function(e, params) {
-    return (function(postId, tags) {
-      // console.log('setAudienceTags', postId, tags);
-      Meteor.call('setAudienceTags', postId, tags);
-    })(post.data._id, params.submitValue);
+    var postId = post.data._id,
+        tags = params.submitValue;
+    Meteor.call('setAudienceTags', postId, tags);
   }).editable({
     mode: 'popup',
-    autotext: 'always',
-    emptytext: 'Add Target Audience',
     placement: 'right',
     type: 'select2',
-    display: tagDisplay,
+    autotext: 'always',
+    emptytext: 'Add Target Audience',
     value: postTags,
+    display: tagDisplay,
     select2: {
       openOnEnter: false,
       tags: allTags,
@@ -107,7 +120,33 @@ var renderTags = function(post) {
     }
   });
 
-  // $('.tags', $this).unbind('')
+  $('.market-size', $this).unbind('save').on('save', function(e, params) {
+    var postId = post.data._id,
+        marketSize = parseInt(params.submitValue.
+          replace(/k$/i, '000').    // allow k for thousands
+          replace(/m$/i, '000000'). // allow m for millions
+          replace(/[^0-9\.]/, '')   // filter out other non-numeric digits
+        );
+    Meteor.call('setMarketSize', postId, marketSize);
+  }).editable({
+    mode: 'popup',
+    placement: 'right',
+    type: 'text',
+    emptytext: 'Estimate Market Size',
+    value: initialMarketSize.toString(),
+    display: function(v) {
+      if (v && v.length > 0) {
+        var msg = 'Est. Market Size: $' + addCommas(v);
+        if (myMarketSizeEstimate)
+          msg += ' (You: $' + addCommas(myMarketSizeEstimate) + ')';
+        else
+          msg += ' <span class="editable-empty">(Add Your Estimate)</span>';
+        $(this).html(msg);
+      } else {
+        $(this).empty();
+      }
+    }
+  });
 };
 
 Template.postItem.rendered = function(){

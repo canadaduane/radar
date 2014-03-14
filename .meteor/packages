@@ -11,8 +11,8 @@ spin
 accounts-ui-bootstrap-dropdown
 accounts-password
 iron-router-progress
-jquerytagsinputjs
 x-editable-bootstrap
 select2
 houston
 collection-hooks
+chartjs

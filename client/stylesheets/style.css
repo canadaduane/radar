@@ -112,6 +112,8 @@ body {
       color: #cdcdcd; }
     .post .post-content p {
       margin: 0; }
+    .post .post-content .tags-wrapper {
+      margin-bottom: 4px; }
   .post .button-pane {
     display: table-cell;
     /*float: right;*/
