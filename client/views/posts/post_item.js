@@ -106,6 +106,8 @@ var renderTags = function(post) {
       tokenSeparators: [",", " "]
     }
   });
+
+  // $('.tags', $this).unbind('')
 };
 
 Template.postItem.rendered = function(){
