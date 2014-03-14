@@ -17,31 +17,44 @@ Template.postItem.helpers({
   }
 });
 
+/**
+ * Underscore string descending sortBy
+ * usage:
+ *   Sort by name ascending `_.sortBy(data, string_comparator('name'));`
+ *   Sort by name descending `_.sortBy(data, string_comparator('-name'));`
+ */
+var string_comparator = function(param_name, compare_depth) {
+  if (param_name[0] == '-') {
+    param_name = param_name.slice(1),
+    compare_depth = compare_depth || 10;
+    return function (item) {
+       return String.fromCharCode.apply(String,
+        _.map(item[param_name].slice(0, compare_depth).split(""), function (c) {
+          return 0xffff - c.charCodeAt();
+        })
+      );
+    };
+  } else {
+    return function (item) {
+      return item[param_name];
+    };
+  }
+};
+
+var reverseStringCompare = function (str) {
+  return String.fromCharCode.apply(String,
+    _.map(str.slice(0, 10).split(""), function (c) {
+      return 0xffff - c.charCodeAt();
+    })
+  );
+};
+
 var renderTags = function(post) {
   var $this = $(post.firstNode);
-  // console.log('post', post);
-  
-  // $.fn.editable.defaults.mode = 'popover';
 
   var i, j;
   var tagsByName = postTagsByName(post.data);
   var postTags = _.keys(tagsByName);
-  // var tagsByName = {};
-
-  // if (post.data.perspectives) {
-  //   for (i = 0; i < post.data.perspectives.length; i++) {
-  //     var perspective = post.data.perspectives[i];
-  //     for (j = 0; j < perspective.audienceTags.length; j++) {
-  //       var tag = perspective.audienceTags[j];
-  //       if (tagsByName[tag]) {
-  //         tagsByName[tag].weight++;
-  //       } else {
-  //         tagsByName[tag] = {name: tag, weight: 1};
-  //       }
-  //     }
-  //   }
-  // }
-
 
   var allTags = function() {
     var tags = Tags.find({}).fetch();
@@ -50,19 +63,24 @@ var renderTags = function(post) {
     });
   };
 
-  var tagFormatResult = function(object, container, query) {
-    $(container).append("<span class='btn'>" + object.text + "</span>");
-  };
-
   var tagDisplay = function(selectedTags) {
-    var html = [];
     if(selectedTags && selectedTags.length) {
-      $.each(selectedTags, function(i, v) {
-        var text = $.fn.editableutils.escape(v);
-        var weight = tagsByName[v] ? (tagsByName[v].weight || 1) : 1;
-        var cls = "tag-weight-" + weight;
-        html.push("<span class='tag " + cls + "'>" + text + "<span class='decal'>" + weight + "</span></span>");
-      });
+      var html = _.chain(selectedTags).
+        map(function(tag) {
+          var weight = (tagsByName[tag] ? (tagsByName[tag].weight || 1) : 1);
+          return {
+            text: $.fn.editableutils.escape(tag),
+            weight: weight,
+            cls: "tag-weight-" + weight
+          };
+        }).
+        sortBy(function(data) {
+          return [data.weight, reverseStringCompare(data.text)];
+        }).reverse().
+        map(function(data) {
+          return "<span class='tag " + data.cls + "'>" + data.text +
+                 "<span class='decal'>" + data.weight + "</span></span>";
+        }).value();
       $(this).html(html.join(' '));
     } else {
       $(this).empty(); 
