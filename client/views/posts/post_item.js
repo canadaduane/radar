@@ -112,7 +112,11 @@ var renderTags = function(post) {
   };
 
   var highlightMyTagsCss = function(data, el) {
-    if (_.contains(postMyTags, data.id)) { return "my-tag"; }
+    if (postMyTags) {
+      if (_.contains(postMyTags, data.id)) { return "my-tag"; }
+    } else {
+      throw "My tags unavailable. Not logged in?";
+    }
   };
 
   $('.tags', $this).
