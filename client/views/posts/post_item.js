@@ -68,7 +68,8 @@ var renderTags = function(post) {
   var tagsByName = postTagsByName(post.data);
   var postTags = _.keys(tagsByName);
   var initialMarketSize = postAvgMarketSize(post.data);
-  var myMarketSizeEstimate = postMyMarketSize(post.data, Meteor.userId());
+  var myMarketSizeEstimate = postMarketSizeForUser(post.data, Meteor.userId());
+  var postMyTags = postAudienceTagsForUser(post.data, Meteor.userId());
 
   var allTags = function() {
     var tags = Tags.find({}).fetch();
@@ -101,24 +102,55 @@ var renderTags = function(post) {
     }
   };
 
-  $('.tags', $this).unbind('save').on('save', function(e, params) {
-    var postId = post.data._id,
-        tags = params.submitValue;
-    Meteor.call('setAudienceTags', postId, tags);
-  }).editable({
-    mode: 'popup',
-    placement: 'right',
-    type: 'select2',
-    autotext: 'always',
-    emptytext: 'Add Target Audience',
-    value: postTags,
-    display: tagDisplay,
-    select2: {
-      openOnEnter: false,
-      tags: allTags,
-      tokenSeparators: [",", " "]
-    }
-  });
+  var myTags = function() {
+    var tags = _.map(postMyTags, function(tag) {
+      return {id: tag, text: tag};
+    });
+    console.log('myTags', tags);
+    // callback(tags);
+    return tags;
+  };
+
+  var highlightMyTagsCss = function(data, el) {
+    if (_.contains(postMyTags, data.id)) { return "my-tag"; }
+  };
+
+  $('.tags', $this).
+    unbind('save').on('save', function(e, params) {
+      var postId = post.data._id,
+          tags = params.submitValue;
+      Meteor.call('setAudienceTags', postId, tags);
+    }).
+    unbind('shown').on('shown', function() {
+      if (arguments.length == 2) {
+        var form = arguments[1].container.$form;
+        form.find('.editable-input').prepend("<div class='editable-label'>Red tags are yours.</div>");
+        setTimeout(function() {
+          form.find('.editable-input ul.select2-choices').click();
+        }, 400);
+      }
+    }).
+    editable({
+      pk: 1,
+      mode: 'popup',
+      placement: 'right',
+      type: 'select2',
+      autotext: 'always',
+      emptytext: 'Add Target Audience',
+      value: postTags,
+      display: tagDisplay,
+      showbuttons: 'right',
+      onblur: 'ignore',
+      select2: {
+        formatSelectionCssClass: highlightMyTagsCss,
+        tags: allTags,
+        multiple: true,
+        tokenSeparators: [",", " "],
+        // minimumInputLength: 1,
+        // openOnEnter: false,
+        // closeOnSelect: false
+      }
+    });
 
   $('.market-size', $this).unbind('save').on('save', function(e, params) {
     var postId = post.data._id,

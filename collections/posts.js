@@ -68,7 +68,22 @@ postAvgMarketSize = function(post) {
   }
 };
 
-postMyMarketSize = function(post, userId) {
+postAudienceTagsForUser = function(post, userId) {
+  if (post.perspectives) {
+    var myPerspective = _.chain(post.perspectives).
+      filter(fromPerspective(userId)).
+      first().
+      value();
+    if (myPerspective)
+      return myPerspective.audienceTags;
+    else
+      return 0;
+  } else {
+    return [];
+  }
+};
+
+postMarketSizeForUser = function(post, userId) {
   if (post.perspectives) {
     var myPerspective = _.chain(post.perspectives).
       filter(fromPerspective(userId)).

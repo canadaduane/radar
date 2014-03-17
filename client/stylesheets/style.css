@@ -18,6 +18,13 @@ body {
   background: #eee;
   color: #666666; }
 
+.select2-container-multi .select2-choices .select2-search-choice.my-tag {
+  border-color: #f33; }
+/*.select2-search-choice.my-tag:before {
+  content: "(my tag)";
+  font-size: 9px;
+  white-space: nowrap; }
+*/
 .tags {
   font-weight: normal;
   font-size: 14px; }
@@ -29,8 +36,9 @@ body {
     border-radius: 11px;
     font-size: 14px;
     display: inline-block;
-    margin-top: 3px;
-  }
+    margin-top: 3px; }
+  .tags.editable > .tag {
+    cursor: pointer; }
   .tags > .tag.tag-weight-1 {
     background-color: #efefef;
     color: #7b7b7b; }
